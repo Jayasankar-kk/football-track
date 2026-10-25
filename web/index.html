@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Football Telestrator</title>
+  <link rel="stylesheet" href="/web/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">⚽ Telestrator</div>
+    <div class="source">
+      <select id="srcKind">
+        <option value="file">Video file</option>
+        <option value="webcam">Webcam / capture card</option>
+        <option value="url">Stream URL (RTSP/HTTP/HLS)</option>
+      </select>
+      <span id="srcFile" class="src-opt">
+        <select id="videoList"></select>
+        <label class="btn ghost">Upload…<input id="upload" type="file" accept="video/*" hidden /></label>
+        <label class="check" title="Replay the file in real time with frame dropping, exactly like a live feed"><input id="simLive" type="checkbox" /> simulate live</label>
+      </span>
+      <span id="srcWebcam" class="src-opt" hidden>
+        <input id="webcamIdx" type="number" min="0" value="0" style="width:4em" />
+      </span>
+      <span id="srcUrl" class="src-opt" hidden>
+        <input id="streamUrl" type="text" placeholder="rtsp://… or http://…" size="32" />
+      </span>
+      <button id="openBtn" class="btn primary">Start</button>
+    </div>
+    <div id="status" class="status">Disconnected</div>
+  </header>
+
+  <main class="layout">
+    <aside class="tools" id="tools">
+      <button data-tool="select" title="Select (V)"><span>⌖</span>Select</button>
+      <button data-tool="ring" title="Player ring (1)"><span>◯</span>Ring</button>
+      <button data-tool="spotlight" title="Spotlight (2)"><span>☀</span>Spot</button>
+      <button data-tool="tag" title="Name tag (3)"><span>🏷</span>Tag</button>
+      <button data-tool="arrow" title="Arrow from player — drag (4)"><span>➚</span>Arrow</button>
+      <button data-tool="link" title="Link players — click players, Enter to finish (5)"><span>⟋</span>Link</button>
+      <button data-tool="zone" title="Zone between players — click 3+, Enter to finish (6)"><span>⬠</span>Zone</button>
+      <div class="sep"></div>
+      <div class="swatches" id="swatches"></div>
+    </aside>
+
+    <section class="stage-wrap">
+      <div class="stage" id="stage">
+        <canvas id="view"></canvas>
+        <div id="hint" class="hint">Pick a source and press Start</div>
+      </div>
+      <div class="transport">
+        <button id="playBtn" class="btn" title="Pause / resume (Space)">⏸</button>
+        <button id="stepBtn" class="btn ghost" title="Next frame (→, files only)">⏭</button>
+        <select id="speed" title="Playback speed (files)">
+          <option value="0.25">0.25×</option>
+          <option value="0.5">0.5×</option>
+          <option value="0.75">0.75×</option>
+          <option value="1" selected>1×</option>
+        </select>
+        <input id="seek" type="range" min="0" max="0" value="0" />
+        <span id="liveBadge" class="badge" hidden>● LIVE</span>
+        <button id="recBtn" class="btn rec" title="Record the video with your markings and save it as a file to share">● Rec</button>
+        <span id="clock" class="mono">—</span>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h3>Markings</h3>
+      <ul id="annList" class="ann-list"></ul>
+      <button id="clearBtn" class="btn ghost small">Clear all</button>
+
+      <h3>Display</h3>
+      <label class="check"><input id="optKey" type="checkbox" checked /> key markings under players</label>
+      <label class="check"><input id="optSmooth" type="checkbox" checked /> smooth motion</label>
+      <label class="check" title="Off: a marking disappears while its player can't be followed, and comes back when found again"><input id="optLost" type="checkbox" /> show hidden markings (faded)</label>
+      <label class="row">Grass tolerance <input id="optTol" type="range" min="10" max="60" step="1" value="30" /><span id="tolVal" class="mono">30</span></label>
+      <button id="calibBtn" class="btn ghost small" title="Sample the pitch colour from the current frame">Calibrate grass colour</button>
+
+      <h3>Help</h3>
+      <div class="help">
+        <p><b>Space</b> pause/resume. Pick a tool, then click a player — or drag a box around them for a precise start.</p>
+        <p>Markings follow the player while the video plays — live or recorded.</p>
+        <p><b>Link/Zone</b>: click players, <b>Enter</b> or double-click to finish, <b>Esc</b> cancels.</p>
+        <p><b>Select</b> a marking then <b>Del</b> removes it; <b>R</b> re-attaches it (e.g. after a camera cut).</p>
+        <p><b>● Rec</b> saves the video with your markings (MP4) to share.</p>
+      </div>
+    </aside>
+  </main>
+  <script src="/web/vendor/mp4-muxer.min.js"></script>
+  <script type="module" src="/web/app.js"></script>
+</body>
+</html>
